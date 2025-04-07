@@ -4,24 +4,16 @@ import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.appdgestionnotas.adapters.EstudianteAdapter;
 import com.example.appdgestionnotas.controller.EstudianteController;
 import com.example.appdgestionnotas.databinding.ActivityMainBinding;
 
-
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding ;
+    private ActivityMainBinding binding;
     private EstudianteController estudianteController;
-
-    // private RecyclerView rvListaEstudiantes;
-    // Declaracion del adapter para el RcyclerView
     private EstudianteAdapter estudianteAdapter;
 
     @Override
@@ -31,14 +23,18 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Inicializar el controlador
         estudianteController = new EstudianteController(this);
-        estudianteController.agregarEstudiante("Juan", "12345");
-        estudianteController.agregarEstudiante("María", "67890");
 
-        // Brindar contexto al recyclerView
+        // Agregar solo si no hay datos existentes
+        if (estudianteController.obtenerEstudiantes().isEmpty()) {
+            estudianteController.agregarEstudiante("Juan", "12345");
+            estudianteController.agregarEstudiante("María", "67890");
+        }
+
+        // Configurar RecyclerView
         binding.rvListaEstudiantes.setLayoutManager(new LinearLayoutManager(this));
-
-        estudianteAdapter = new EstudianteAdapter(estudianteController.obtenerEstudiantes());
+        estudianteAdapter = new EstudianteAdapter(this, estudianteController.obtenerEstudiantes());
         binding.rvListaEstudiantes.setAdapter(estudianteAdapter);
     }
 }

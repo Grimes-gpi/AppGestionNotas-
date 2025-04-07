@@ -42,4 +42,31 @@ public class NotaController {
         cursor.close();
         return lista;
     }
+
+    public void editarNota(int notaId, double nuevoValor) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("valor", nuevoValor);
+        db.update("notas", values, "id = ?", new String[]{String.valueOf(notaId)});
+        db.close();
+    }
+
+    // ❌ Eliminar una nota
+    public void eliminarNota(int notaId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete("notas", "id = ?", new String[]{String.valueOf(notaId)});
+        db.close();
+    }
+
+    // 🧮 Calcular promedio por estudiante
+    public double calcularPromedioNotas(int estudianteId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT AVG(valor) FROM notas WHERE estudiante_id = ?", new String[]{String.valueOf(estudianteId)});
+        double promedio = 0;
+        if (cursor.moveToFirst()) {
+            promedio = cursor.getDouble(0);
+        }
+        cursor.close();
+        return promedio;
+    }
 }
